@@ -1,5 +1,3 @@
-using MinimalAPI.Domain.Enuns;
-
 namespace MinimalAPI.Domain.ModelViews;
 
 public record AdminLoggedIn

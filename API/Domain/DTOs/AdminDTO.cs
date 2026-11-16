@@ -1,6 +1,7 @@
-using MinimalAPI.Domain.Enuns;
+using MinimalAPI.Domain.Enums;
 
 namespace MinimalAPI.DTOs;
+
 public class AdminDTO
 {
     public string Email { get; set; } = default!;

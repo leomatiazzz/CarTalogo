@@ -1,6 +1,18 @@
 namespace MinimalAPI.Domain.ModelViews;
 
-public struct ValidationErrors
+public record ValidationErrors
 {
-    public List<string> Messages { get; set; }
+    public List<string> Messages { get; init; } = new();
+
+    public ValidationErrors() { }
+
+    public ValidationErrors(params string[] messages)
+    {
+        Messages = new List<string>(messages);
+    }
+
+    public ValidationErrors(IEnumerable<string> messages)
+    {
+        Messages = new List<string>(messages);
+    }
 }

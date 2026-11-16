@@ -1,7 +1,7 @@
-namespace MinimalAPI.Domain.Enuns;
+namespace MinimalAPI.Domain.Enums;
 
 public enum Profile
 {
     Admin,
     Editor
-} 
+}
