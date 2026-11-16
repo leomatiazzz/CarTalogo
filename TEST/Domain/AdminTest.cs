@@ -1,4 +1,5 @@
 using MinimalAPI.Domain.Entities;
+using MinimalAPI.Domain.Services;
 
 namespace TEST.Domain.Entities;
 
@@ -23,4 +24,15 @@ public sealed class AdminTest
         Assert.AreEqual("teste", adm.Password);
         Assert.AreEqual("Admin", adm.Profile);
     }
+
+    [TestMethod]
+    public void TestPasswordHashing()
+    {
+        var passwordService = new PasswordService();
+        var hash = passwordService.HashPassword("123456");
+        Assert.IsFalse(string.IsNullOrEmpty(hash));
+        Assert.IsTrue(passwordService.VerifyPassword(hash, "123456"));
+        Assert.IsFalse(passwordService.VerifyPassword(hash, "wrong_password"));
+    }
 }
+
