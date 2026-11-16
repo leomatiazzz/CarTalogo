@@ -18,6 +18,5 @@ public class Vehicle
     public string Brand { get; set; } = default!;
 
     [Required]
-    [StringLength(10)]
     public int Year { get; set; } = default!;
 }
