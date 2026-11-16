@@ -103,4 +103,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Database dumps and local secret files
+*.dump.sql
+*.sql
+*.bak
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,dotnetcore,visualstudiocode
