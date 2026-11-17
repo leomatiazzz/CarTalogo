@@ -107,5 +107,15 @@ $RECYCLE.BIN/
 *.dump.sql
 *.sql
 *.bak
+.env
+*.env
+!.env.example
+
+# Frontend build and dependencies
+FRONT/node_modules/
+FRONT/dist/
+*.local
+TestResults/
+*.cobertura.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,dotnetcore,visualstudiocode

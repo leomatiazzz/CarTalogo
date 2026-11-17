@@ -1,225 +1,204 @@
-# 🚀 CarTálogo (.NET 10 & React 19) - Gestão de Veículos & Administradores
+# 🚀 CarTálogo - Gestão Inteligente de Veículos & Catálogo
 
+> **Trabalho de Conclusão de Curso — PROJETO B: O SISTEMA**  
+> **Autor:** Leonardo Matias ([leomatiazzz](https://github.com/leomatiazzz))  
+> **API de Domínio Único** com fluxo funcional completo de ponta a ponta, arquitetura limpa em .NET 10, Single Page Application em React 19 e conformidade rigorosa com a rubrica acadêmica.
+
+---
+
+[![CI Pipeline](https://img.shields.io/badge/CI%20Pipeline-GitHub%20Actions-2ea44f?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-9.0-6C257E?logo=nuget)](https://learn.microsoft.com/ef/core/)
+[![EF Core](https://img.shields.io/badge/EF%20Core-9.0-6C257E?logo=nuget)](https://learn.microsoft.com/ef/core/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![JWT](https://img.shields.io/badge/Auth-JWT%20Bearer-black?logo=jsonwebtokens)](https://jwt.io/)
-[![MSTest](https://img.shields.io/badge/Tests-27%20Passing-success?logo=visualstudio)](https://learn.microsoft.com/visualstudio/test/unit-testing-mstest-runner)
+[![Tests](https://img.shields.io/badge/Tests-29%20Passing-success?logo=visualstudio)](TEST/)
+[![Coverage](https://img.shields.io/badge/Coverage-Meta%20%3E%2080%25-brightgreen)](TEST/)
 
 <p align="center">
-  <img src="assets/logofull.png" alt="CarTálogo Logo" width="520" />
+  <img src="assets/logo-full.png" alt="CarTálogo Logo" width="460" />
 </p>
 
-Uma plataforma SaaS completa para **gerenciamento e catálogo inteligente de veículos**, unindo uma **API REST moderna em .NET 10** e uma **Single Page Application (SPA) em React 19**, com controle de acesso granular baseado em papéis (**RBAC: Admin e Editor**), autenticação JWT e conteinerização via Docker Compose.
+---
+
+## 📌 Sumário de Entregáveis do Projeto (Rubrica de Avaliação)
+
+Abaixo estão os atalhos diretos para cada artefato exigido pela proposta do curso:
+
+| Módulo / Exigência | Entregável no Repositório | Descrição / Evidência |
+| :--- | :--- | :--- |
+| **M1: Código e Design** | [docker-compose.yml](docker-compose.yml) | Compose que sobe a pilha completa com apenas 1 comando |
+| **M1: SOLID & Pattern** | [docs/adr/0001-decisao.md](docs/adr/0001-decisao.md) | ADR justificando o **Service/Repository Pattern** (Template MADR) |
+| **M2: Testes e CI Verde** | [TEST/](TEST/) e [.github/workflows/ci.yml](.github/workflows/ci.yml) | 29 testes determinísticos + Pipeline do GitHub Actions |
+| **M2: Cobertura Mínima** | [TEST/Test.csproj](TEST/Test.csproj) | Suporte a `coverlet.collector` com meta de cobertura $\ge 80\%$ |
+| **M3: Segredos e Ambientes** | [.env.example](.env.example) e [.gitignore](.gitignore) | Segredos fora do repositório; dump sql exposto eliminado |
+| **M3: Logs e Observabilidade**| [API/Program.cs](API/Program.cs) | Logs estruturados em JSON (`AddJsonConsole`) |
+| **M3: Métrica e 1 SLO** | Endpoint `/metrics` e [docs/desempenho.md](docs/desempenho.md) | SLO: Disponibilidade $\ge 99\%$ e Latência P95 $\le 200\text{ ms}$ |
+| **M4: Documentação Técnica** | [README.md](README.md) e [docs/openapi.yaml](docs/openapi.yaml) | Especificação estática OpenAPI 3.0 do endpoint principal |
+| **M4: Carga e Desempenho** | [tests/k6-smoke-test.js](tests/k6-smoke-test.js) e [docs/desempenho.md](docs/desempenho.md) | Smoke test k6 com medição real de P95 (**42.18 ms**) |
+| **Uso de IA e Autoria** | [docs/ia.md](docs/ia.md) e [CONTRIBUTORS.md](CONTRIBUTORS.md) | Declaração de prompts de IA e comprovação de domínio técnico |
 
 ---
 
-## 🏛️ Arquitetura e Design de Software
+## ⚡ Como Subir o Sistema (Comando Único)
 
-O projeto adota os princípios de **Clean Architecture**, **SOLID** e separação estrita de responsabilidades:
+A aplicação conta com orquestração completa em contêineres Docker (**Frontend SPA + Backend API + Banco MySQL 8.0** com verificação de integridade).
 
-```mermaid
-flowchart TD
-    subgraph Client["Clientes HTTP"]
-        Browser["Swagger UI / Web App"]
-        Mobile["Mobile / API Consumer"]
-    end
-
-    subgraph Pipeline["ASP.NET Core Middleware (.NET 10)"]
-        Cors["CORS"]
-        Authn["JWT Authentication"]
-        Authz["RBAC Authorization (Admin / Editor)"]
-        Health["Health Checks (/health)"]
-        ProbDetails["ProblemDetails (RFC 7807)"]
-    end
-
-    subgraph Endpoints["Camada de Apresentação (Minimal APIs)"]
-        AdminEp["AdminEndpoints (/admins)"]
-        VehicleEp["VehicleEndpoints (/vehicles)"]
-        HomeEp["HomeEndpoints (/)"]
-    end
-
-    subgraph Domain["Camada de Domínio & Serviços"]
-        AdminSvc["AdminService (IAdminService)"]
-        VehicleSvc["VehicleService (IVehicleService)"]
-        TokenSvc["TokenService (ITokenService)"]
-        PassSvc["PasswordService (IPasswordService - PBKDF2)"]
-    end
-
-    subgraph Infrastructure["Camada de Infraestrutura & Dados"]
-        EF["Entity Framework Core (DbContexto)"]
-        MySQL[("MySQL 8.0 Database")]
-    end
-
-    Client --> Pipeline
-    Pipeline --> Endpoints
-    Endpoints --> Domain
-    Domain --> Infrastructure
-    Infrastructure --> MySQL
-```
-
-### Principais Destaques Arquiteturais:
-1. **Minimal APIs Idiomáticas:** Sem o arquivo monolítico legado `Startup.cs`. Inicialização via `WebApplication.CreateBuilder(args)` e agrupamento modular com `app.MapGroup()`.
-2. **Desacoplamento de Contrato com ViewModels/DTOs:** Nenhuma entidade interna do EF Core é exposta diretamente na API. Todas as respostas utilizam `record` imutáveis (`VehicleModelView`, `AdminModelView`).
-3. **I/O 100% Assíncrono (`async/await` com `CancellationToken`):** Todas as operações de banco de dados são não-bloqueantes, prevenindo *ThreadPool Starvation*.
-4. **Otimização de Consultas:** Consultas somente-leitura utilizam `.AsNoTracking()` e filtros SARGable (sem `.ToLower()` que invalidem índices do MySQL).
-
----
-
-## 🔒 Segurança da Informação
-
-* **Hash Criptográfico de Senhas (PBKDF2):** As senhas de administradores nunca são salvas ou comparadas em texto puro. Utiliza-se derivação de chave com HMAC-SHA512 e *salt* randômico por usuário (`PasswordHasher<T>` nativo do ASP.NET Core).
-* **JWT Bearer Conforme RFC 7519:**
-  * Assinatura com chave de alta entropia (≥ 256 bits).
-  * Validação estrita de tempo de vida em UTC (`DateTime.UtcNow`), `Issuer`, `Audience` e `ClockSkew = TimeSpan.Zero`.
-* **Controle de Acesso Baseado em Papéis (RBAC):**
-  * `Admin`: Acesso administrativo irrestrito (CRUD de administradores e veículos).
-  * `Editor`: Acesso operacional (cadastro, leitura e consulta de veículos; sem permissão de exclusão ou gestão de usuários).
-* **Índices e Integridade:** Constraint `UNIQUE` na coluna `Email` de administradores para impedir cadastros duplicados.
-* **Segredos Fora do Repositório:** Chaves e dados sensíveis gerenciados via variáveis de ambiente e `.gitignore` higienizado contra dumps de banco de dados.
-
----
-
-## 📋 Endpoints da API
-
-| Método | Rota | Autenticação / Role | Descrição | Status HTTP |
-|---|---|:---:|---|:---:|
-| `GET` | `/` | Pública | Informações da API e link da documentação | `200 OK` |
-| `GET` | `/health` | Pública | Verificação de integridade (*liveness/readiness*) | `200 OK` |
-| `POST` | `/admins/login` | Pública | Autenticação e emissão de Token JWT | `200 OK`, `401 Unauthorized` |
-| `GET` | `/admins` | `Admin` | Listagem paginada de administradores | `200 OK`, `401`, `403 Forbidden` |
-| `GET` | `/admins/{id}` | `Admin` | Busca de administrador por ID | `200 OK`, `404 Not Found` |
-| `POST` | `/admins` | `Admin` | Cadastro de novo administrador | `201 Created`, `400 Bad Request` |
-| `GET` | `/vehicles` | `Admin, Editor` | Listagem de veículos com filtros (`name`, `brand`, `page`) | `200 OK`, `401` |
-| `GET` | `/vehicles/{id}` | `Admin, Editor` | Busca de veículo por ID | `200 OK`, `404 Not Found` |
-| `POST` | `/vehicles` | `Admin, Editor` | Cadastro de novo veículo | `201 Created`, `400 Bad Request` |
-| `PUT` | `/vehicles/{id}` | `Admin` | Atualização cadastral de veículo | `200 OK`, `400`, `403`, `404` |
-| `DELETE` | `/vehicles/{id}` | `Admin` | Exclusão de veículo | `204 NoContent`, `403`, `404` |
-
----
-
-## 🛠️ Como Executar
-
-### Pré-requisitos
-* [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) e [Node.js v20+](https://nodejs.org/) ou [Docker Desktop](https://www.docker.com/)
-
----
-
-### Opção 1: Execução com Docker Compose (Fullstack)
-
-Suba toda a infraestrutura (**Frontend React + API .NET 10 + MySQL 8.0**) com um único comando:
-
+### 1. Iniciar com Docker Compose:
 ```bash
 docker compose up -d --build
 ```
 
-Acesse os serviços:
-* **Frontend SPA (CarTálogo Web):** `http://localhost:3000`
-* **Backend API REST:** `http://localhost:5231`
-* **Swagger UI:** `http://localhost:5231/swagger`
-* **Health Check:** `http://localhost:5231/health`
+### 2. Acessar os Serviços:
+* 🌐 **Frontend SPA (Interface do Usuário):** `http://localhost:3000`
+* 🔌 **Backend API REST (.NET 10):** `http://localhost:5231`
+* 📖 **Documentação Interativa (Swagger UI):** `http://localhost:5231/swagger`
+* 🩺 **Health Check Operacional:** `http://localhost:5231/health`
+* 📈 **Métricas e Monitoramento de SLO:** `http://localhost:5231/metrics`
 
-Para encerrar o ambiente:
+### 3. Encerrar os Serviços:
 ```bash
 docker compose down -v
 ```
 
 ---
 
-### Opção 2: Execução Local em Desenvolvimento
+## 🧪 Como Executar a Suíte de Testes Automatizados
 
-#### 1. Iniciar o Backend (.NET 10):
+O repositório possui **29 testes automatizados** (unitários e de integração HTTP). Os testes utilizam o provedor em memória do EF Core (`Microsoft.EntityFrameworkCore.InMemory`) e `WebApplicationFactory`, sendo **100% isolados, determinísticos e independentes de MySQL local**.
+
+Execute no terminal:
+
 ```bash
-# Aplicar migrações no MySQL
+# Executar todos os testes
+dotnet test
+
+# Executar testes coletando cobertura de código (cobertura.xml)
+dotnet test --collect:"XPlat Code Coverage"
+```
+
+---
+
+## 💻 Execução Local sem Docker (Desenvolvimento)
+
+Caso queira executar os projetos diretamente na máquina de desenvolvimento:
+
+### 1. Backend API (.NET 10):
+```bash
+# Atualizar banco de dados via migrations (requer MySQL local ativo)
 dotnet ef database update --project API/minimal-api.csproj
 
-# Iniciar a API (porta 5231)
+# Subir a API
 dotnet run --project API/minimal-api.csproj
 ```
 
-#### 2. Iniciar o Frontend (React + Vite):
-Em um novo terminal:
+### 2. Frontend React (Vite):
 ```bash
 cd FRONT
 npm install
 npm run dev
 ```
-O frontend estará acessível em `http://localhost:5173` com proxy automático redirecionando chamadas `/api` para `http://localhost:5231`.
+Acesse `http://localhost:5173`. O Vite possui proxy reverso configurado para repassar chamadas `/api` diretamente para `http://localhost:5231`.
 
 ---
 
-### 🔑 Credenciais Pré-configuradas para Testes
+## 🔑 Credenciais Pré-configuradas para Demonstração
 
-| Perfil | E-mail | Senha | Permissões |
-|---|---|---|---|
-| **Admin** | `administrador@teste.com` | `123456` | Acesso total (CRUD de veículos e gestão de administradores) |
-| **Editor** | `editor@teste.com` | `123456` | Leitura, busca e cadastro de novos veículos |
+| Perfil | E-mail | Senha | Permissões no Sistema |
+|:---:|---|:---:|---|
+| **Admin** | `administrador@teste.com` | `123456` | Acesso total: CRUD completo de veículos e gestão de contas |
+| **Editor** | `editor@teste.com` | `123456` | Acesso operacional: catálogo, busca, filtros e cadastro de veículos |
+
+> **Nota:** Novos usuários também podem se registrar livremente através da aba **Criar conta** na tela de login; o sistema atribui automaticamente a permissão de **Editor** (`POST /admins/register`).
 
 ---
 
-## 🧪 Suíte de Testes Automatizados
+## 🏛️ Arquitetura e Padrões de Projeto (SOLID)
 
-O projeto conta com testes unitários e de integração desenvolvidos com **MSTest**, **WebApplicationFactory** e **Entity Framework Core In-Memory Provider**. Os testes são **100% determinísticos e isolados**, rodando sem necessidade de infraestrutura externa ou MySQL local.
+```mermaid
+flowchart TD
+    subgraph Apresentacao["Camada de Apresentação"]
+        ReactApp["SPA React 19 (Tailwind v4)"]
+        Swagger["Swagger UI & OpenAPI"]
+        K6["k6 Smoke Test"]
+    end
 
-Execute toda a suíte de testes:
+    subgraph Transporte["Minimal API Endpoints (.NET 10)"]
+        AdminEp["AdminEndpoints (/admins)"]
+        VehicleEp["VehicleEndpoints (/vehicles)"]
+        ObsEp["Observability (/health, /metrics)"]
+    end
 
-```bash
-dotnet test
+    subgraph Dominio["Camada de Domínio & Serviços (Service Pattern)"]
+        AdminSvc["AdminService (IAdminService)"]
+        VehicleSvc["VehicleService (IVehicleService)"]
+        TokenSvc["TokenService (ITokenService - HMAC-SHA256)"]
+        PassSvc["PasswordService (IPasswordService - PBKDF2)"]
+    end
+
+    subgraph Infraestrutura["Infraestrutura & Persistência"]
+        EF["Entity Framework Core 9 (DbContexto)"]
+        MySQL[("MySQL 8.0 Database")]
+        InMemory[("InMemory Provider (Testes)")]
+    end
+
+    ReactApp -->|HTTP REST + Bearer JWT| Transporte
+    Swagger -->|HTTP| Transporte
+    K6 -->|HTTP Carga| Transporte
+    Transporte --> Dominio
+    Dominio --> Infraestrutura
+    EF -.->|Produção / Docker| MySQL
+    EF -.->|Ambiente de Testes| InMemory
 ```
 
-### Cobertura dos Testes:
-* ✅ **Testes Unitários de Segurança:** Validação de hashing PBKDF2 e comparação com salt randômico.
-* ✅ **Testes Unitários de Serviços:** Operações CRUD, paginação segura e filtros de busca em `VehicleService` e `AdminService`.
-* ✅ **Testes de Integração HTTP:**
-  * Fluxo de autenticação (`/admins/login`) com credenciais válidas e inválidas.
-  * Validação de payloads e regras de domínio (ex: ano do veículo entre 1886 e ano vigente + 1).
-  * **Testes de Autorização RBAC:** Confirmação de que o perfil `Editor` recebe `403 Forbidden` ao tentar excluir veículos ou acessar dados de administradores.
-  * Verificação do endpoint de integridade operacional (`/health`).
+### Justificativas de Design:
+* **Service/Repository Pattern:** Centraliza regras de validação e persistência fora dos manipuladores de rota, permitindo reutilização e testes unitários com mocks.
+* **Segurança Forte:** Hashing de senhas com PBKDF2 (100.000 iterações, salt individual criptográfico); JWT com expiração em UTC e audience/issuer verificados.
+* **Observabilidade Nativa:** Middleware ProblemDetails (RFC 7807/9457), logs estruturados em JSON e endpoint `/metrics` com avaliação do SLO.
 
 ---
 
-## 📂 Estrutura de Diretórios
+## 📂 Estrutura do Repositório
 
 ```
-minimal-api/
-├── API/                               # Projeto Principal da API
-│   ├── Domain/                        # Regras de Negócio e Domínio
-│   │   ├── DTOs/                      # Data Transfer Objects de Entrada
-│   │   ├── Entities/                  # Entidades do EF Core (Admin, Vehicle)
-│   │   ├── Enums/                     # Enumerações (Profile: Admin, Editor)
-│   │   ├── Interfaces/                # Contratos de Serviços (IAdmin, IVehicle, etc.)
-│   │   ├── ModelViews/                # DTOs de Saída / ViewModels (Record)
-│   │   └── Services/                  # Implementações com async/await e PBKDF2
-│   ├── Endpoints/                     # Módulos Minimal API (RouteGroupBuilder)
-│   │   ├── AdminEndpoints.cs
-│   │   ├── VehicleEndpoints.cs
-│   │   └── HomeEndpoints.cs
-│   ├── Infrastructure/                # Persistência de Dados
-│   │   └── Db/DbContexto.cs
-│   ├── Migrations/                    # Histórico de Migrações do EF Core
-│   ├── Program.cs                     # Inicialização Idiomática .NET 10
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml                     # Pipeline GitHub Actions (Build, Test, Front)
+├── API/                               # Backend Minimal API em .NET 10
+│   ├── Domain/                        # Entidades, DTOs, Interfaces e Serviços
+│   ├── Endpoints/                     # Módulos de Rotas Minimal API
+│   ├── Infrastructure/                # DbContexto e Migrations
+│   ├── Program.cs                     # Configuração da aplicação e endpoints
 │   └── appsettings.json
-│
-├── TEST/                              # Suíte de Testes Automatizados
-│   ├── Domain/                        # Testes Unitários de Domínio e Serviços
-│   ├── Helpers/Setup.cs               # WebApplicationFactory e Gerador de Tokens JWT
-│   ├── Mocks/                         # Mocks em Memória para Testes de Integração
-│   └── Requests/                      # Testes de Requisições HTTP (RBAC, CRUD)
-│
-├── Dockerfile                         # Multi-stage build otimizado para .NET 10
-├── docker-compose.yml                 # Orquestração da API e MySQL com Healthcheck
-├── .dockerignore
+├── FRONT/                             # Frontend SPA em React 19 + TypeScript
+│   ├── src/                           # Componentes, Páginas, Contexts e API Client
+│   ├── Dockerfile                     # Nginx Alpine para produção
+│   └── package.json
+├── TEST/                              # Suíte com 29 testes automatizados
+│   ├── Domain/                        # Testes unitários de serviços e segurança
+│   ├── Requests/                      # Testes de integração HTTP e RBAC
+│   └── Test.csproj                    # Configurado com coverlet.collector
+├── docs/                              # Documentação Arquitetural e Acadêmica
+│   ├── adr/
+│   │   └── 0001-decisao.md            # ADR no template padrão MADR
+│   ├── openapi.yaml                   # Contrato de API OpenAPI 3.0
+│   ├── desempenho.md                  # Relatório de carga k6 e medição de P95
+│   └── ia.md                          # Declaração detalhada de uso de IA
+├── tests/
+│   └── k6-smoke-test.js               # Script automatizado de carga no k6
+├── docker-compose.yml                 # Orquestração de 1-comando
+├── Dockerfile                         # Multi-stage build .NET 10 da API
+├── .env.example                       # Modelo de variáveis de ambiente
 ├── .gitignore
-└── minimal-api.sln                    # Solução Principal Unificada
+├── CONTRIBUTORS.md                    # Declaração de autoria
+└── README.md                          # Este documento
 ```
 
 ---
 
-## 📜 Licença
+## 📜 Licença e Integridade Acadêmica
 
-Distribuído sob a licença MIT. Consulte `LICENSE` para mais informações.
+Este projeto é disponibilizado para fins acadêmicos e educacionais sob a licença MIT. Para detalhes sobre autoria e integridade de desenvolvimento com IA, consulte [CONTRIBUTORS.md](CONTRIBUTORS.md) e [docs/ia.md](docs/ia.md).

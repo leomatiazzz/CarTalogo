@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: cartalogo_frontend
     ports:
-      - "3000:80"
+      - "${FRONTEND_PORT:-3000}:80"
     depends_on:
       - api
     restart: unless-stopped
@@ -18,13 +18,13 @@ services:
       dockerfile: Dockerfile
     container_name: minimal_api_app
     ports:
-      - "5231:8080"
+      - "${API_PORT:-5231}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__MySql=Server=mysql;Database=minimal_api;Uid=root;Pwd=root_strong_password_2026;
-      - Jwt__Key=MINIMAL_API_SUPER_SECRET_KEY_FOR_SIGNING_TOKENS_2026_CHANGE_IN_PRODUCTION!
-      - Jwt__Issuer=MinimalAPI
-      - Jwt__Audience=MinimalAPIClient
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ConnectionStrings__MySql=Server=mysql;Database=${MYSQL_DATABASE:-minimal_api};Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:-root_strong_password_2026};
+      - Jwt__Key=${Jwt__Key:-MINIMAL_API_SUPER_SECRET_KEY_FOR_SIGNING_TOKENS_2026_CHANGE_IN_PRODUCTION!}
+      - Jwt__Issuer=${Jwt__Issuer:-MinimalAPI}
+      - Jwt__Audience=${Jwt__Audience:-MinimalAPIClient}
     depends_on:
       mysql:
         condition: service_healthy
@@ -36,14 +36,14 @@ services:
     image: mysql:8.0
     container_name: minimal_api_db
     environment:
-      - MYSQL_ROOT_PASSWORD=root_strong_password_2026
-      - MYSQL_DATABASE=minimal_api
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_strong_password_2026}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-minimal_api}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_strong_password_2026"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_strong_password_2026}"]
       interval: 5s
       timeout: 5s
       retries: 10

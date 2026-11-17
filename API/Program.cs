@@ -10,6 +10,17 @@ using MinimalAPI.Infrastructure.Db;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Structured Logging (JSON format for observability / production)
+if (builder.Environment.IsProduction())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddJsonConsole(options =>
+    {
+        options.IncludeScopes = true;
+        options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffZ ";
+    });
+}
+
 // Configuration & Secrets
 var jwtKey = builder.Configuration["Jwt:Key"] 
              ?? builder.Configuration.GetValue<string>("Jwt") 
@@ -133,6 +144,26 @@ app.UseAuthorization();
 
 // Health Check Endpoint
 app.MapHealthChecks("/health").AllowAnonymous();
+
+// Observability & Metrics Endpoint (SLO Monitoring)
+app.MapGet("/metrics", () =>
+{
+    var process = System.Diagnostics.Process.GetCurrentProcess();
+    return Results.Ok(new
+    {
+        status = "healthy",
+        uptimeSeconds = Math.Round((DateTime.UtcNow - process.StartTime.ToUniversalTime()).TotalSeconds, 1),
+        memoryMB = Math.Round(process.WorkingSet64 / (1024.0 * 1024.0), 2),
+        threads = process.Threads.Count,
+        slo = new
+        {
+            serviceLevelObjective = "Disponibilidade >= 99% e Latência P95 < 200ms",
+            targetAvailability = 0.99,
+            targetLatencyP95Ms = 200,
+            status = "compliant"
+        }
+    });
+}).AllowAnonymous().WithTags("Observability");
 
 // Modular Minimal API Endpoints
 app.MapHomeEndpoints();

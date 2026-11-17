@@ -1,0 +1,454 @@
+openapi: 3.0.3
+info:
+  title: CarTálogo - Vehicle & Admin Management API
+  description: >
+    API REST desenvolvida em .NET 10 com ASP.NET Core Minimal APIs, EF Core,
+    autenticação JWT com controle de acesso baseado em papéis (RBAC - Admin/Editor),
+    hashing de senha com PBKDF2 e observabilidade nativa.
+  version: 1.0.0
+  contact:
+    name: Leonardo Matias
+    email: leo21matias@hotmail.com
+
+servers:
+  - url: http://localhost:5231
+    description: Servidor de Desenvolvimento Local
+  - url: http://localhost:8080
+    description: Servidor em Contêiner Docker
+
+tags:
+  - name: Autenticação & Administradores
+    description: Operações de login, cadastro e gestão de usuários e perfis
+  - name: Catálogo de Veículos
+    description: Operações de CRUD, consulta, filtros e paginação de veículos
+  - name: Observabilidade
+    description: Endpoints de verificação de saúde e métricas com SLO
+
+paths:
+  /health:
+    get:
+      tags:
+        - Observabilidade
+      summary: Health check da aplicação
+      description: Retorna o status de integridade do serviço.
+      responses:
+        '200':
+          description: Serviço operando normalmente (Healthy)
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Healthy
+
+  /metrics:
+    get:
+      tags:
+        - Observabilidade
+      summary: Métricas e monitoramento de SLO
+      description: Retorna métricas de processo, tempo de atividade e conformidade com o SLO.
+      responses:
+        '200':
+          description: Métricas do sistema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  uptimeSeconds:
+                    type: number
+                    example: 3600.5
+                  memoryMB:
+                    type: number
+                    example: 45.2
+                  threads:
+                    type: integer
+                    example: 18
+                  slo:
+                    type: object
+                    properties:
+                      serviceLevelObjective:
+                        type: string
+                        example: "Disponibilidade >= 99% e Latência P95 < 200ms"
+                      targetAvailability:
+                        type: number
+                        example: 0.99
+                      targetLatencyP95Ms:
+                        type: integer
+                        example: 200
+                      status:
+                        type: string
+                        example: compliant
+
+  /admins/login:
+    post:
+      tags:
+        - Autenticação & Administradores
+      summary: Autenticação de usuário
+      description: Realiza login com e-mail e senha, retornando o token JWT e dados do perfil.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDTO'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModelView'
+        '401':
+          description: E-mail ou senha incorretos
+
+  /admins/register:
+    post:
+      tags:
+        - Autenticação & Administradores
+      summary: Auto-cadastro público
+      description: Permite o registro de novas contas de usuário, atribuindo automaticamente o perfil Editor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDTO'
+      responses:
+        '201':
+          description: Conta criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModelView'
+        '400':
+          description: Erros de validação nos campos informados
+        '409':
+          description: E-mail já cadastrado na plataforma
+
+  /admins:
+    get:
+      tags:
+        - Autenticação & Administradores
+      summary: Listar administradores e editores
+      description: Retorna a lista paginada de contas cadastradas. Exige perfil Admin.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pagina
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Lista de administradores retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminModelView'
+        '401':
+          description: Não autenticado
+        '403':
+          description: Acesso negado (requer perfil Admin)
+
+    post:
+      tags:
+        - Autenticação & Administradores
+      summary: Cadastrar usuário via painel
+      description: Cria um novo usuário definindo explicitamente o perfil (Admin ou Editor). Exige perfil Admin.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminDTO'
+      responses:
+        '201':
+          description: Usuário cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModelView'
+        '400':
+          description: Erros de validação
+        '401':
+          description: Não autenticado
+        '403':
+          description: Acesso negado
+
+  /admins/{id}:
+    get:
+      tags:
+        - Autenticação & Administradores
+      summary: Obter usuário por ID
+      description: Retorna os detalhes de um usuário específico. Exige perfil Admin.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModelView'
+        '404':
+          description: Usuário não encontrado
+
+  /vehicles:
+    get:
+      tags:
+        - Catálogo de Veículos
+      summary: Listar veículos com filtros e paginação (Endpoint Principal)
+      description: Consulta automóveis cadastrados com suporte a busca por nome, marca e paginação.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pagina
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: nome
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: marca
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de veículos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+        '401':
+          description: Não autenticado
+
+    post:
+      tags:
+        - Catálogo de Veículos
+      summary: Cadastrar novo veículo
+      description: Registra um novo veículo no catálogo. Requer autenticação (Admin ou Editor).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleDTO'
+      responses:
+        '201':
+          description: Veículo cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          description: Erro de validação nos dados do veículo
+
+  /vehicles/{id}:
+    get:
+      tags:
+        - Catálogo de Veículos
+      summary: Obter detalhes do veículo por ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Veículo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Veículo não encontrado
+
+    put:
+      tags:
+        - Catálogo de Veículos
+      summary: Atualizar dados de um veículo
+      description: Modifica nome, marca e ano do veículo. Exige perfil Admin.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleDTO'
+      responses:
+        '200':
+          description: Veículo atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          description: Erros de validação
+        '403':
+          description: Acesso negado (requer perfil Admin)
+        '404':
+          description: Veículo não encontrado
+
+    delete:
+      tags:
+        - Catálogo de Veículos
+      summary: Excluir um veículo
+      description: Remove permanentemente um veículo do catálogo. Exige perfil Admin.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Veículo excluído com sucesso
+        '403':
+          description: Acesso negado (requer perfil Admin)
+        '404':
+          description: Veículo não encontrado
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Informe o token JWT obtido no endpoint de login.
+
+  schemas:
+    LoginDTO:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: administrador@teste.com
+        password:
+          type: string
+          format: password
+          example: "123456"
+
+    RegisterDTO:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: novo.usuario@empresa.com
+        password:
+          type: string
+          format: password
+          example: "Senha@123"
+
+    AdminDTO:
+      type: object
+      required:
+        - email
+        - password
+        - profile
+      properties:
+        email:
+          type: string
+          format: email
+          example: editor@teste.com
+        password:
+          type: string
+          format: password
+          example: "123456"
+        profile:
+          type: string
+          enum: [Admin, Editor]
+          example: Editor
+
+    AdminModelView:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: administrador@teste.com
+        profile:
+          type: string
+          example: Admin
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Corolla XEi
+        brand:
+          type: string
+          example: Toyota
+        year:
+          type: integer
+          example: 2024
+
+    VehicleDTO:
+      type: object
+      required:
+        - name
+        - brand
+        - year
+      properties:
+        name:
+          type: string
+          example: Civic Touring
+        brand:
+          type: string
+          example: Honda
+        year:
+          type: integer
+          example: 2023
