@@ -1,7 +1,7 @@
 # 🚀 CarTálogo - Gestão Inteligente de Veículos & Catálogo
 
-> **Trabalho de Conclusão de Curso — PROJETO B: O SISTEMA**  
-> **Autor:** Leonardo Matias ([leomatiazzz](https://github.com/leomatiazzz))  
+> **Trabalho de Conclusão do Curso Full Cycle - Geração Tech 4.0 (PROJETO B: O SISTEMA)**  
+> **Autor:** Léo Matias Araújo ([leomatiazzz](https://github.com/leomatiazzz))  
 > **API de Domínio Único** com fluxo funcional completo de ponta a ponta, arquitetura limpa em .NET 10, Single Page Application em React 19 e conformidade rigorosa com a rubrica acadêmica.
 
 ---

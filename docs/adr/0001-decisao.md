@@ -1,7 +1,7 @@
 # ADR 0001: Adoção do Padrão Service/Repository com ASP.NET Core Minimal APIs e Front-end Desacoplado
 
 * **Status:** Aceito (Accepted)
-* **Decisores:** Leonardo Matias ([leomatiazzz](https://github.com/leomatiazzz))
+* **Decisores:** Léo Matias Araújo ([leomatiazzz](https://github.com/leomatiazzz))
 * **Data:** 2026-11-16
 * **Origem da Decisão:** Requisito M1 / M4 do Projeto B (SOLID e 1 Design Pattern justificado)
 

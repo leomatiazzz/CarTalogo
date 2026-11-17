@@ -1,6 +1,7 @@
 # Relatório de Desempenho e Medição de SLO (`docs/desempenho.md`)
 
 * **Projeto:** CarTálogo (Projeto B – O Sistema)
+* **Autor:** Léo Matias Araújo ([leomatiazzz](https://github.com/leomatiazzz))
 * **Endpoint Principal Avaliado:** `GET /vehicles` (Catálogo de Veículos) e `GET /health`
 * **Ferramenta de Carga:** [k6](https://k6.io/) (v0.54+)
 * **Script do Teste:** [tests/k6-smoke-test.js](../tests/k6-smoke-test.js)

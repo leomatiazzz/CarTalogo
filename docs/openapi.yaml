@@ -7,7 +7,7 @@ info:
     hashing de senha com PBKDF2 e observabilidade nativa.
   version: 1.0.0
   contact:
-    name: Leonardo Matias
+    name: Léo Matias Araújo
     email: leo21matias@hotmail.com
 
 servers:

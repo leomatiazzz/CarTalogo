@@ -1,7 +1,7 @@
 # Declaração de Uso de Inteligência Artificial (`docs/ia.md`)
 
 * **Projeto:** CarTálogo (Projeto B – O Sistema)
-* **Autor:** Leonardo Matias ([leomatiazzz](https://github.com/leomatiazzz))
+* **Autor:** Léo Matias Araújo ([leomatiazzz](https://github.com/leomatiazzz))
 * **Contexto Acadêmico:** Cumprimento da exigência de transparência e integridade sobre o uso de IA Generativa no desenvolvimento de software.
 
 ---
