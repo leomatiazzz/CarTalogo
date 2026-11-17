@@ -1,15 +1,21 @@
-# 🚀 Minimal API (.NET 10) - Gerenciamento de Veículos & Administradores
+# 🚀 CarTálogo (.NET 10 & React 19) - Gestão de Veículos & Administradores
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![C#](https://img.shields.io/badge/C%23-13.0-239120?logo=csharp&logoColor=white)](https://docs.microsoft.com/dotnet/csharp/)
-[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-Minimal%20APIs-blue?logo=dotnet)](https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Entity Framework Core](https://img.shields.io/badge/EF%20Core-9.0-6C257E?logo=nuget)](https://learn.microsoft.com/ef/core/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![JWT](https://img.shields.io/badge/Auth-JWT%20Bearer-black?logo=jsonwebtokens)](https://jwt.io/)
 [![MSTest](https://img.shields.io/badge/Tests-27%20Passing-success?logo=visualstudio)](https://learn.microsoft.com/visualstudio/test/unit-testing-mstest-runner)
 
-Uma API REST moderna, escalável e segura desenvolvida com **C# 13**, **.NET 10** e **ASP.NET Core Minimal APIs**, utilizando **Entity Framework Core (Pomelo MySQL)**, arquitetura modular baseada em rotas com `RouteGroupBuilder`, autenticação e autorização por papéis (**RBAC** via JWT), hash criptográfico de senhas e suíte de testes de integração determinística.
+<p align="center">
+  <img src="assets/logofull.png" alt="CarTálogo Logo" width="520" />
+</p>
+
+Uma plataforma SaaS completa para **gerenciamento e catálogo inteligente de veículos**, unindo uma **API REST moderna em .NET 10** e uma **Single Page Application (SPA) em React 19**, com controle de acesso granular baseado em papéis (**RBAC: Admin e Editor**), autenticação JWT e conteinerização via Docker Compose.
 
 ---
 
@@ -100,20 +106,21 @@ flowchart TD
 ## 🛠️ Como Executar
 
 ### Pré-requisitos
-* [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) ou [Docker](https://www.docker.com/)
+* [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) e [Node.js v20+](https://nodejs.org/) ou [Docker Desktop](https://www.docker.com/)
 
 ---
 
-### Opção 1: Execução com Docker Compose (Recomendado)
+### Opção 1: Execução com Docker Compose (Fullstack)
 
-Suba a API e o banco de dados MySQL com um único comando:
+Suba toda a infraestrutura (**Frontend React + API .NET 10 + MySQL 8.0**) com um único comando:
 
 ```bash
 docker compose up -d --build
 ```
 
-A API estará disponível em:
-* **Base URL:** `http://localhost:5231`
+Acesse os serviços:
+* **Frontend SPA (CarTálogo Web):** `http://localhost:3000`
+* **Backend API REST:** `http://localhost:5231`
 * **Swagger UI:** `http://localhost:5231/swagger`
 * **Health Check:** `http://localhost:5231/health`
 
@@ -124,25 +131,34 @@ docker compose down -v
 
 ---
 
-### Opção 2: Execução Local (.NET CLI)
+### Opção 2: Execução Local em Desenvolvimento
 
-1. **Configurar a Connection String:**
-   No arquivo `API/appsettings.json`, configure a conexão com a sua instância do MySQL:
-   ```json
-   "ConnectionStrings": {
-     "MySql": "Server=localhost;Database=minimal_api;Uid=root;Pwd=sua_senha;"
-   }
-   ```
+#### 1. Iniciar o Backend (.NET 10):
+```bash
+# Aplicar migrações no MySQL
+dotnet ef database update --project API/minimal-api.csproj
 
-2. **Aplicar as Migrações do EF Core:**
-   ```bash
-   dotnet ef database update --project API/minimal-api.csproj
-   ```
+# Iniciar a API (porta 5231)
+dotnet run --project API/minimal-api.csproj
+```
 
-3. **Iniciar a Aplicação:**
-   ```bash
-   dotnet run --project API/minimal-api.csproj
-   ```
+#### 2. Iniciar o Frontend (React + Vite):
+Em um novo terminal:
+```bash
+cd FRONT
+npm install
+npm run dev
+```
+O frontend estará acessível em `http://localhost:5173` com proxy automático redirecionando chamadas `/api` para `http://localhost:5231`.
+
+---
+
+### 🔑 Credenciais Pré-configuradas para Testes
+
+| Perfil | E-mail | Senha | Permissões |
+|---|---|---|---|
+| **Admin** | `administrador@teste.com` | `123456` | Acesso total (CRUD de veículos e gestão de administradores) |
+| **Editor** | `editor@teste.com` | `123456` | Leitura, busca e cadastro de novos veículos |
 
 ---
 

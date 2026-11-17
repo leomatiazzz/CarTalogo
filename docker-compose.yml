@@ -1,4 +1,17 @@
 services:
+  frontend:
+    build:
+      context: ./FRONT
+      dockerfile: Dockerfile
+    container_name: cartalogo_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - minimal_net
+
   api:
     build:
       context: .
