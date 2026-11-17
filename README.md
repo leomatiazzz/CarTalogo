@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logofull.png" alt="CarTálogo Logo" width="460" />
+</p>
+
 # 🚀 CarTálogo - Gestão Inteligente de Veículos & Catálogo
 
 > **Trabalho de Conclusão do Curso Full Cycle - Geração Tech 4.0 (PROJETO B: O SISTEMA)**  
@@ -17,9 +21,6 @@
 [![Tests](https://img.shields.io/badge/Tests-29%20Passing-success?logo=visualstudio)](TEST/)
 [![Coverage](https://img.shields.io/badge/Coverage-Meta%20%3E%2080%25-brightgreen)](TEST/)
 
-<p align="center">
-  <img src="assets/logo-full.png" alt="CarTálogo Logo" width="460" />
-</p>
 
 ---
 
