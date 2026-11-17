@@ -135,7 +135,7 @@ export const LoginPage: React.FC = () => {
               }`}
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>Acessar Conta</span>
+              <span>Acessar conta</span>
             </button>
             <button
               type="button"
@@ -147,12 +147,12 @@ export const LoginPage: React.FC = () => {
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
-              <span>Criar Conta</span>
+              <span>Criar conta</span>
             </button>
           </div>
 
           <h2 className="text-lg font-bold text-white mb-2 tracking-wide">
-            {mode === 'login' ? 'Identifique-se para continuar' : 'Cadastre-se na Plataforma'}
+            {mode === 'login' ? 'Identifique-se para continuar' : 'Cadastre-se na plataforma'}
           </h2>
 
           {mode === 'register' && (
@@ -235,7 +235,7 @@ export const LoginPage: React.FC = () => {
             {mode === 'register' && (
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-[#9BA3AF] mb-1.5">
-                  Confirmar Senha
+                  Confirmar senha
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9BA3AF]">
@@ -267,7 +267,7 @@ export const LoginPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <span>Criar Conta e Acessar</span>
+                  <span>Criar conta e acessar</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -287,7 +287,7 @@ export const LoginPage: React.FC = () => {
                   onClick={() => handleFillCredentials('administrador@teste.com', '123456')}
                   className="p-2 rounded-lg bg-[#20242B] hover:bg-[#20242B]/80 border border-[#3A4250] text-left transition-colors cursor-pointer group"
                 >
-                  <div className="font-bold text-[#F28C28] group-hover:underline">Perfil Admin</div>
+                  <div className="font-bold text-[#F28C28] group-hover:underline">Perfil admin</div>
                   <div className="text-[10px] text-[#9BA3AF]/80 truncate">administrador@teste.com</div>
                 </button>
 
@@ -296,7 +296,7 @@ export const LoginPage: React.FC = () => {
                   onClick={() => handleFillCredentials('editor@teste.com', '123456')}
                   className="p-2 rounded-lg bg-[#20242B] hover:bg-[#20242B]/80 border border-[#3A4250] text-left transition-colors cursor-pointer group"
                 >
-                  <div className="font-bold text-sky-400 group-hover:underline">Perfil Editor</div>
+                  <div className="font-bold text-sky-400 group-hover:underline">Perfil editor</div>
                   <div className="text-[10px] text-[#9BA3AF]/80 truncate">editor@teste.com</div>
                 </button>
               </div>
@@ -309,12 +309,12 @@ export const LoginPage: React.FC = () => {
       <Modal
         isOpen={isForgotModalOpen}
         onClose={() => setIsForgotModalOpen(false)}
-        title="Recuperação de Senha"
+        title="Recuperação de senha"
       >
         {forgotSent ? (
           <div className="text-center py-4 space-y-3">
             <CheckCircle2 className="w-12 h-12 text-[#F28C28] mx-auto" />
-            <h4 className="text-base font-bold text-white">Solicitação Registrada</h4>
+            <h4 className="text-base font-bold text-white">Solicitação registrada</h4>
             <p className="text-xs text-[#9BA3AF] leading-relaxed">
               Em um ambiente corporativo com serviço de e-mail (AWS SES / SendGrid), uma mensagem com token seguro de redefinição expirável seria disparada para <strong>{forgotEmail || 'seu e-mail'}</strong>.
             </p>
@@ -370,7 +370,7 @@ export const LoginPage: React.FC = () => {
                 type="submit"
                 className="px-5 py-2.5 bg-[#F28C28] hover:bg-[#D9771E] text-white text-xs font-bold rounded-xl shadow-lg transition-all cursor-pointer"
               >
-                Enviar Instruções
+                Enviar instruções
               </button>
             </div>
           </form>

@@ -172,7 +172,7 @@ export const VehiclesPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-black text-white tracking-wide flex items-center gap-3">
             <Car className="w-7 h-7 text-[#F28C28]" />
-            Catálogo de Veículos
+            Catálogo de veículos
           </h1>
           <p className="text-sm text-[#9BA3AF] mt-1">
             Gerencie e consulte todos os automóveis cadastrados no sistema
@@ -184,7 +184,7 @@ export const VehiclesPage: React.FC = () => {
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#F28C28] hover:bg-[#D9771E] active:scale-[0.98] text-white font-bold rounded-xl shadow-lg shadow-[#F28C28]/20 text-sm tracking-wide transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>Novo Veículo</span>
+          <span>Novo veículo</span>
         </button>
       </div>
 
@@ -193,7 +193,7 @@ export const VehiclesPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-2">
-              Buscar por Nome / Modelo
+              Buscar por nome / modelo
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9BA3AF]">
@@ -214,7 +214,7 @@ export const VehiclesPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-2">
-              Buscar por Marca
+              Buscar por marca
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9BA3AF]">
@@ -243,7 +243,7 @@ export const VehiclesPage: React.FC = () => {
               className="w-full py-2 px-4 bg-[#20242B] hover:bg-[#20242B]/70 border border-[#3A4250] text-[#9BA3AF] hover:text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Limpar Filtros</span>
+              <span>Limpar filtros</span>
             </button>
           </div>
         </div>
@@ -272,7 +272,7 @@ export const VehiclesPage: React.FC = () => {
               <thead>
                 <tr className="border-b border-[#3A4250] bg-[#20242B]/60 text-xs uppercase tracking-wider text-[#9BA3AF]">
                   <th className="py-3.5 px-6 font-bold">ID</th>
-                  <th className="py-3.5 px-6 font-bold">Modelo / Nome</th>
+                  <th className="py-3.5 px-6 font-bold">Modelo / nome</th>
                   <th className="py-3.5 px-6 font-bold">Marca</th>
                   <th className="py-3.5 px-6 font-bold">Ano</th>
                   <th className="py-3.5 px-6 font-bold text-right">Ações</th>
@@ -359,7 +359,7 @@ export const VehiclesPage: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={modalMode === 'create' ? 'Cadastrar Novo Veículo' : `Editar Veículo #${selectedVehicle?.id}`}
+        title={modalMode === 'create' ? 'Cadastrar novo veículo' : `Editar veículo #${selectedVehicle?.id}`}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {formErrors.length > 0 && (
@@ -375,7 +375,7 @@ export const VehiclesPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-1.5">
-              Nome / Modelo
+              Nome / modelo
             </label>
             <input
               type="text"
@@ -403,7 +403,7 @@ export const VehiclesPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-1.5">
-              Ano de Fabricação
+              Ano de fabricação
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9BA3AF]">
@@ -437,7 +437,7 @@ export const VehiclesPage: React.FC = () => {
               disabled={submitting}
               className="px-5 py-2.5 bg-[#F28C28] hover:bg-[#D9771E] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#F28C28]/20 transition-all disabled:opacity-50 cursor-pointer flex items-center gap-2"
             >
-              {submitting ? 'Salvando...' : modalMode === 'create' ? 'Cadastrar' : 'Salvar Alterações'}
+              {submitting ? 'Salvando...' : modalMode === 'create' ? 'Cadastrar' : 'Salvar alterações'}
             </button>
           </div>
         </form>
@@ -447,7 +447,7 @@ export const VehiclesPage: React.FC = () => {
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Confirmar Exclusão"
+        title="Confirmar exclusão"
       >
         <div className="space-y-4">
           <p className="text-sm text-[#E9EDF2]">
@@ -475,7 +475,7 @@ export const VehiclesPage: React.FC = () => {
               onClick={handleConfirmDelete}
               className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 cursor-pointer"
             >
-              {submitting ? 'Excluindo...' : 'Sim, Excluir'}
+              {submitting ? 'Excluindo...' : 'Sim, excluir'}
             </button>
           </div>
         </div>

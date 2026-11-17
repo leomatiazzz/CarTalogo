@@ -99,7 +99,7 @@ export const AdminsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-black text-white tracking-wide flex items-center gap-3">
             <Users className="w-7 h-7 text-[#F28C28]" />
-            Controle de Acessos & Usuários
+            Controle de acessos e usuários
           </h1>
           <p className="text-sm text-[#9BA3AF] mt-1">
             Gerenciamento de contas com permissões administrativas e de edição
@@ -111,7 +111,7 @@ export const AdminsPage: React.FC = () => {
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#F28C28] hover:bg-[#D9771E] active:scale-[0.98] text-white font-bold rounded-xl shadow-lg shadow-[#F28C28]/20 text-sm tracking-wide transition-all cursor-pointer"
         >
           <UserPlus className="w-4 h-4" />
-          <span>Novo Usuário</span>
+          <span>Novo usuário</span>
         </button>
       </div>
 
@@ -135,7 +135,7 @@ export const AdminsPage: React.FC = () => {
                 <tr className="border-b border-[#3A4250] bg-[#20242B]/60 text-xs uppercase tracking-wider text-[#9BA3AF]">
                   <th className="py-3.5 px-6 font-bold">ID</th>
                   <th className="py-3.5 px-6 font-bold">E-mail</th>
-                  <th className="py-3.5 px-6 font-bold">Perfil de Acesso (Role)</th>
+                  <th className="py-3.5 px-6 font-bold">Perfil de acesso (role)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#3A4250]/60 text-sm">
@@ -197,7 +197,7 @@ export const AdminsPage: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Cadastrar Novo Usuário / Administrador"
+        title="Cadastrar novo usuário / administrador"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {formErrors.length > 0 && (
@@ -213,7 +213,7 @@ export const AdminsPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-1.5">
-              E-mail do Usuário
+              E-mail do usuário
             </label>
             <input
               type="email"
@@ -227,7 +227,7 @@ export const AdminsPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-1.5">
-              Senha Inicial
+              Senha inicial
             </label>
             <input
               type="password"
@@ -244,15 +244,15 @@ export const AdminsPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-[#9BA3AF] uppercase tracking-wider mb-1.5">
-              Perfil de Acesso (Role)
+              Perfil de acesso (role)
             </label>
             <select
               value={formData.profile}
               onChange={(e) => setFormData({ ...formData, profile: e.target.value as any })}
               className="w-full px-3.5 py-2.5 bg-[#20242B] border border-[#3A4250] rounded-xl text-white text-sm focus:outline-none focus:border-[#F28C28]"
             >
-              <option value="Editor">Editor (Cadastro e consulta de veículos)</option>
-              <option value="Admin">Admin (Acesso total + Gestão de Usuários)</option>
+              <option value="Editor">Editor (cadastro e consulta de veículos)</option>
+              <option value="Admin">Admin (acesso total + gestão de usuários)</option>
             </select>
           </div>
 
@@ -269,7 +269,7 @@ export const AdminsPage: React.FC = () => {
               disabled={submitting}
               className="px-5 py-2.5 bg-[#F28C28] hover:bg-[#D9771E] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#F28C28]/20 transition-all disabled:opacity-50 cursor-pointer"
             >
-              {submitting ? 'Cadastrando...' : 'Cadastrar Usuário'}
+              {submitting ? 'Cadastrando...' : 'Cadastrar usuário'}
             </button>
           </div>
         </form>
