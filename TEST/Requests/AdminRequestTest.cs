@@ -36,6 +36,51 @@ public sealed class AdminRequestTest
     }
 
     [TestMethod]
+    public async Task Register_WithValidData_Returns201CreatedAndAssignsEditorRole()
+    {
+        // Arrange
+        var registerDTO = new RegisterDTO
+        {
+            Email = $"novo_auto_registro_{Guid.NewGuid()}@teste.com",
+            Password = "senha_segura_123"
+        };
+
+        var content = new StringContent(JsonSerializer.Serialize(registerDTO), Encoding.UTF8, "application/json");
+
+        // Act - Rota pública
+        var response = await Setup.client.PostAsync("/admins/register", content);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+        var result = await response.Content.ReadAsStringAsync();
+        var created = JsonSerializer.Deserialize<AdminModelView>(result, jsonOptions);
+
+        Assert.IsNotNull(created);
+        Assert.AreEqual(registerDTO.Email.ToLower(), created.Email.ToLower());
+        Assert.AreEqual("Editor", created.Profile); // Sempre recebe 'Editor'
+    }
+
+    [TestMethod]
+    public async Task Register_WithShortPassword_Returns400BadRequest()
+    {
+        // Arrange
+        var registerDTO = new RegisterDTO
+        {
+            Email = "teste_curto@teste.com",
+            Password = "123" // Menor que 6 caracteres
+        };
+
+        var content = new StringContent(JsonSerializer.Serialize(registerDTO), Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await Setup.client.PostAsync("/admins/register", content);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [TestMethod]
     public async Task Login_WithValidCredentials_ReturnsOkAndToken()
     {
         // Arrange

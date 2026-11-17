@@ -31,6 +31,46 @@ public static class AdminEndpoints
             });
         }).AllowAnonymous();
 
+        group.MapPost("/register", async ([FromBody] RegisterDTO registerDTO, IAdminService adminService, CancellationToken ct) =>
+        {
+            var validation = new ValidationErrors();
+
+            if (string.IsNullOrWhiteSpace(registerDTO.Email))
+                validation.Messages.Add("O campo Email é obrigatório. / The Email field is required.");
+            else if (!registerDTO.Email.Contains('@') || !registerDTO.Email.Contains('.'))
+                validation.Messages.Add("O formato do e-mail é inválido. / Invalid email format.");
+
+            if (string.IsNullOrWhiteSpace(registerDTO.Password))
+                validation.Messages.Add("O campo Senha é obrigatório. / The Password field is required.");
+            else if (registerDTO.Password.Length < 6)
+                validation.Messages.Add("A senha deve conter no mínimo 6 caracteres. / Password must be at least 6 characters.");
+
+            if (validation.Messages.Count > 0)
+                return Results.BadRequest(validation);
+
+            if (await adminService.ExistsByEmailAsync(registerDTO.Email, ct))
+            {
+                validation.Messages.Add("Já existe um usuário cadastrado com este e-mail. / An account with this email already exists.");
+                return Results.BadRequest(validation);
+            }
+
+            var admin = new Admin
+            {
+                Email = registerDTO.Email.Trim().ToLower(),
+                Password = registerDTO.Password,
+                Profile = Profile.Editor.ToString() // Auto-registro público sempre recebe o papel 'Editor'
+            };
+
+            await adminService.CreateAsync(admin, ct);
+
+            return Results.Created($"/admins/{admin.Id}", new AdminModelView
+            {
+                Id = admin.Id,
+                Email = admin.Email,
+                Profile = admin.Profile
+            });
+        }).AllowAnonymous();
+
         group.MapGet("/", async ([FromQuery] int? page, IAdminService adminService, CancellationToken ct) =>
         {
             var admins = await adminService.AllAsync(page, 10, ct);
